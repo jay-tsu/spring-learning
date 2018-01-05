@@ -4,12 +4,9 @@ import com.emc.mystic.repository.ClusterDao;
 import com.emc.mystic.model.ClusterBean;
 import com.emc.mystic.service.ClusterService;
 import com.emc.mystic.service.exception.ClusterServiceException;
-import com.emc.mystic.service.exception.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @Transactional

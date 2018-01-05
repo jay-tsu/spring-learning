@@ -2,8 +2,6 @@ package com.emc.mystic.service.exception;
 
 import org.springframework.http.HttpStatus;
 
-import java.util.Locale;
-
 public class ServiceException extends Exception{
     private static final long serialVersionUID = 5358683245923127425L;
     private int errorCode;

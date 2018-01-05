@@ -24,27 +24,33 @@ import java.util.List;
 public class ClusterController implements Cluster {
     private static final Logger logger = LogManager.getLogger(ClusterController.class);
 
-    List<String> messages = Arrays.asList("", "没有找到对应的ID");
+    // The customized messages for service exception, including HttpStatus.
+    public enum LocalizedMessages {
+        // Todo: use the message key for i18N
+        CLUSTER_SERVICE_START(0, "", HttpStatus.OK),
+        NO_RELATED_ID(1, "没有找到对应的ID", HttpStatus.INTERNAL_SERVER_ERROR);
 
+        private int errorCode;
+        private String message;
+        private HttpStatus httpStatus;
+
+        LocalizedMessages(final int errorCode, final String message, final HttpStatus httpStatus) {
+            this.errorCode = errorCode;
+            this.message = message;
+            this.httpStatus = httpStatus;
+        }
+
+        public int getErrorCode() {return this.errorCode;}
+
+        public String getMessage() {return this.message;}
+
+        public HttpStatus getHttpStatus() {return this.httpStatus;}
+    }
+
+    private List<LocalizedMessages> messages = Arrays.asList(LocalizedMessages.NO_RELATED_ID);
 
     @Autowired
     private ClusterService clusterService;
-
-//    @Override
-//    public HttpEntity<Node> getAvailableNodes(final RequestParameters params) {
-////        logger.info("calling ClusterController.getAvailableNodes");
-//        Node node = new Node(String.format(template, "World"), "Testing");
-//        node.add(linkTo(methodOn(ClusterController.class).getAvailableNodes(params)).withSelfRel());
-//        return new ResponseEntity<>(node, HttpStatus.OK);
-//    }
-
-//    @Override
-//    public HttpEntity<ClusterBean> getCluster(@PathVariable("id") Long id, final RequestParameters params)
-//            throws ClusterServiceException {
-//        ClusterBean cluster = clusterService.getCluster(id);
-//
-//        return new ResponseEntity<>(cluster, HttpStatus.OK);
-//    }
 
     @Override
     public ClusterBean getCluster(@PathVariable("id") Long id, final RequestParameters params)
@@ -53,15 +59,16 @@ public class ClusterController implements Cluster {
     }
 
     @Override
-    public HttpEntity<JsonNode> ClusterServiceExceptionHandler(final RequestParameters params, ServiceException exception) {
-        // update exception message here and then build json object for response.
-        return new ResponseEntity<>(Transformers.convertExceptionToJsonNode(exception, 0, params.getLocale()).apply(messages),
-                HttpStatus.CREATED);
-    }
+    public HttpEntity<JsonNode> ClusterServiceExceptionHandler(final RequestParameters params,
+                                                               final ServiceException exception) {
+        int start_index = LocalizedMessages.CLUSTER_SERVICE_START.getErrorCode();
 
-//    @Override
-//    public HttpEntity<JsonNode> PowerlinkAccountServiceExceptionHandler(ServiceException ex) {
-//        return new ResponseEntity<>(Transformers.convertExceptionToJsonNode(ex, 10).get(),
-//                HttpStatus.CREATED);
-//    }
+        return messages.stream()
+                .filter(message -> message.getErrorCode() == start_index + exception.getErrorCode())
+                .map(message -> new ResponseEntity<>(
+                        Transformers.convertExceptionToJsonNode(exception, start_index)
+                                .apply(message.getMessage()),
+                        message.getHttpStatus()))
+                .findFirst().get();
+    }
 }
