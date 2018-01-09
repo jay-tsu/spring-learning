@@ -10,7 +10,6 @@ import java.util.List;
 
 @SpringBootApplication
 public class Application extends WebMvcConfigurerAdapter {
-
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
         argumentResolvers.add(new RequestParametersResolver());

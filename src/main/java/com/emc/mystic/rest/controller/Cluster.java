@@ -15,6 +15,6 @@ public interface Cluster {
     ClusterBean getCluster(@PathVariable("id") Long id, final RequestParameters params) throws ClusterServiceException;
 
     @ExceptionHandler({ClusterServiceException.class, })
-    HttpEntity<JsonNode> ClusterServiceExceptionHandler(final RequestParameters params, ServiceException ex);
+    HttpEntity<JsonNode> clusterServiceExceptionHandler(final RequestParameters params, ServiceException ex);
 
 }

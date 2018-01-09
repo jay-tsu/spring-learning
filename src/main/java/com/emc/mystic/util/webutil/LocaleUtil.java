@@ -1,5 +1,6 @@
 package com.emc.mystic.util.webutil;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.BeanUtils;
@@ -25,7 +26,6 @@ public class LocaleUtil {
             return DEFAULT_LOCALE;
         }
 
-        locale.replaceAll("-", "_");
         String[] lc = locale.split("_");
         if (lc.length != 2) {
             return DEFAULT_LOCALE;
@@ -54,6 +54,33 @@ public class LocaleUtil {
         return StringUtils.hasText(lang) ? getLocale(lang) : DEFAULT_LOCALE;
     }
 
+    public static String getMessageWithParams(String bundleName, String key, HttpServletRequest req,  Object... args) {
+        return getMessage(bundleName, key, getLocale(req), args);
+    }
+
+    public static String getMessageWithParams(String bundleName, String key, String locale,  Object... args) {
+        return getMessage(bundleName, key, getLocale(locale), args);
+    }
+
+    public static String getMessage(String bundleName, String key, Locale locale, Object... args) {
+        logger.trace("Get localized messages for bundle " + bundleName + ", key " + key + ", locale " + locale + ", args " + args);
+        if (!StringUtils.hasText(bundleName) || !StringUtils.hasText(key)) {
+            return key;
+        }
+
+        if (locale == null) {
+            locale = DEFAULT_LOCALE;
+        }
+
+        String locMsg = getBundle(bundleName, locale).getString(key);
+        if (locMsg == null) {
+            String enMsg = getBundle(bundleName, DEFAULT_LOCALE).getString(key);
+            return enMsg == null ? key : String.format(enMsg, args);
+        } else {
+            return String.format(locMsg, args);
+        }
+    }
+
     public static String getMessage(String bundleName, String key, HttpServletRequest req) {
         return getMessage(bundleName, key, getLocale(req));
     }
@@ -63,7 +90,7 @@ public class LocaleUtil {
     }
 
     public static String getMessage(String bundleName, String key, Locale locale) {
-        logger.trace("Get localized message for bundle " + bundleName + ", key " + key + ", locale " + locale);
+        logger.trace("Get localized messages for bundle " + bundleName + ", key " + key + ", locale " + locale);
         if (!StringUtils.hasText(bundleName) || !StringUtils.hasText(key)) {
             return key;
         }

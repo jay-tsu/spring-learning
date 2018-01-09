@@ -24,6 +24,7 @@ public class ClusterServiceImpl implements ClusterService {
         ClusterBean clusterBean = clusterDao.findOne(id);
         if (clusterBean == null) {
             throw new ClusterServiceException("Can not find cluster id", 1);
+//            throw new NullPointerException();
         } else {
             return clusterBean;
         }
