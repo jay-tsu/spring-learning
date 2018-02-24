@@ -9,3 +9,10 @@ CREATE TABLE node (
   ID Bigserial  PRIMARY KEY NOT NULL,
   NAME varchar(100) NOT NULL
 );
+
+DROP TABLE IF EXISTS system;
+CREATE TABLE system (
+  ID Bigserial  PRIMARY KEY NOT NULL,
+  NAME varchar(100) NOT NULL,
+  HEALTH varchar(100) NOT NULL
+);

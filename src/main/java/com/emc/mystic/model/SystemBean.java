@@ -1,16 +1,17 @@
 package com.emc.mystic.model;
 
 import javax.persistence.Entity;
-import javax.persistence.Table;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Entity
-@Table(name = "cluster")
-public class ClusterBean {
+@Table(name = "system")
+public class SystemBean {
 
     @Id
     private Long id;
     private String name;
+    private String health;
 
     public Long getId() {
         return id;
@@ -26,5 +27,13 @@ public class ClusterBean {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getHealth() {
+        return health;
+    }
+
+    public void setHealth(String health) {
+        this.health = health;
     }
 }

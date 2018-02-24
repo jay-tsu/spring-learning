@@ -1,12 +1,12 @@
 package com.emc.mystic.model;
 
 import javax.persistence.Entity;
-import javax.persistence.Table;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Entity
 @Table(name = "cluster")
-public class ClusterBean {
+public class NodeBean {
 
     @Id
     private Long id;

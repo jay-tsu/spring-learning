@@ -1,6 +1,7 @@
 package com.emc.mystic.rest.controller.impl;
 
 import com.emc.mystic.model.ClusterBean;
+import com.emc.mystic.model.NodeBean;
 import com.emc.mystic.rest.controller.Transformers;
 import com.emc.mystic.rest.controller.message.ClusterMessageSource;
 import com.emc.mystic.service.ClusterService;
@@ -16,6 +17,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 public class ClusterController implements com.emc.mystic.rest.controller.Cluster {
     private static final Logger logger = LogManager.getLogger(ClusterController.class);
@@ -27,6 +30,11 @@ public class ClusterController implements com.emc.mystic.rest.controller.Cluster
     public ClusterBean getCluster(@PathVariable("id") Long id, final RequestParameters params)
             throws ClusterServiceException {
         return clusterService.getCluster(id);
+    }
+
+    @Override
+    public List<NodeBean> getAvailableNodes(final RequestParameters params) throws ClusterServiceException{
+        return clusterService.getAvailableNodes();
     }
 
     @Override
