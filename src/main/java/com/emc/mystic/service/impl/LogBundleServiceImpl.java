@@ -28,7 +28,7 @@ public class LogBundleServiceImpl implements LogBundleService {
 
     public enum SupportedLogBundleType {
         iDRAC,
-        VxManger
+        VxManager
     }
 
     @Override
