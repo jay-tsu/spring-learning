@@ -2,9 +2,13 @@ package com.emc.mystic.service.exception;
 
 import org.springframework.http.HttpStatus;
 
-public class ServiceException extends Exception{
+import java.util.Arrays;
+import java.util.List;
+
+public class ServiceException extends RuntimeException{
     private static final long serialVersionUID = 5358683245923127425L;
     private int errorCode;
+    private List<Object> arguments;
 
     /**
      * Exception in an RestController implementation.
@@ -26,6 +30,19 @@ public class ServiceException extends Exception{
     public ServiceException(final String msg, final int errorCode) {
         this(msg);
         this.errorCode = errorCode;
+    }
+
+    /**
+     * Exception in an OData service implementation.
+     * @param msg the text of the handler
+     * @param errorCode the error code of the handler as defined by the OData standard
+     * @see Exception
+     * @see HttpStatus
+     */
+    public ServiceException(final String msg, final int errorCode, Object... args) {
+        this(msg);
+        this.errorCode = errorCode;
+        this.arguments = Arrays.asList(args);
     }
 
     /**
@@ -60,5 +77,9 @@ public class ServiceException extends Exception{
      */
     public int getErrorCode() {
         return errorCode;
+    }
+
+    public Object[] getExceptionArguments() {
+        return arguments.toArray();
     }
 }

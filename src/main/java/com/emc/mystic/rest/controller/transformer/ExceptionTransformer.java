@@ -1,4 +1,4 @@
-package com.emc.mystic.rest.controller;
+package com.emc.mystic.rest.controller.transformer;
 
 import java.util.function.Function;
 

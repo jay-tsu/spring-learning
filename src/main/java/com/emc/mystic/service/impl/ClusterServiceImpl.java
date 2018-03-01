@@ -25,21 +25,19 @@ public class ClusterServiceImpl implements ClusterService {
     public ClusterBean getCluster(final Long id) throws ClusterServiceException {
         ClusterBean clusterBean = clusterDao.findOne(id);
         if (clusterBean == null) {
-            throw new ClusterServiceException("Can not find cluster id", 1);
-//            throw new NullPointerException();
-        } else {
-            return clusterBean;
+            throw new ClusterServiceException(String.format("Can not find cluster by id %s", id), 1);
         }
+
+        return clusterBean;
     }
 
     @Override
     public List<NodeBean> getAvailableNodes() throws ClusterServiceException {
         List<NodeBean> nodes = nodeDao.findAll();
         if (nodes == null) {
-            throw new ClusterServiceException("Can not find cluster id", 1);
-//            throw new NullPointerException();
-        } else {
-            return nodes;
+            throw new ClusterServiceException("Can not find any available nodes.", 2);
         }
+
+        return nodes;
     }
 }

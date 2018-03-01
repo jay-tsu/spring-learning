@@ -1,10 +1,9 @@
 package com.emc.mystic.rest.controller.impl;
 
-import com.emc.mystic.model.ClusterBean;
-import com.emc.mystic.model.NodeBean;
+import com.emc.mystic.model.JobBean;
 import com.emc.mystic.rest.controller.transformer.Transformers;
 import com.emc.mystic.rest.controller.message.ClusterMessageSource;
-import com.emc.mystic.service.ClusterService;
+import com.emc.mystic.service.JobService;
 import com.emc.mystic.service.exception.ClusterServiceException;
 import com.emc.mystic.service.exception.ServiceException;
 import com.emc.mystic.util.webutil.RequestParameters;
@@ -13,32 +12,50 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
-public class ClusterController implements com.emc.mystic.rest.controller.ClusterInterface {
-    private static final Logger logger = LogManager.getLogger(ClusterController.class);
+public class JobController implements com.emc.mystic.rest.controller.JobInterface {
+    private static final Logger logger = LogManager.getLogger(JobController.class);
 
     @Autowired
-    private ClusterService clusterService;
+    private JobService jobService;
 
     @Override
-    public ClusterBean getCluster(@PathVariable("id") Long id, final RequestParameters params)
+    public ResponseEntity<?> getJob(@PathVariable("id") UUID id, final RequestParameters params)
             throws ClusterServiceException {
-        return clusterService.getCluster(id);
+        JobBean job = jobService.getJob(id);
+
+        if (job.getProgress() == 100) {
+            URI location = ServletUriComponentsBuilder.fromCurrentContextPath()
+                                                      .path(job.getTarget())
+                                                      .build()
+                                                      .toUri();
+
+            return ResponseEntity.status(HttpStatus.SEE_OTHER)
+                                 .location(location)
+                                 .body(job);
+        } else {
+            return ResponseEntity.ok()
+                                 .body(job);
+        }
     }
 
     @Override
-    public List<NodeBean> getAvailableNodes(final RequestParameters params) throws ClusterServiceException{
-        return clusterService.getAvailableNodes();
+    public List<JobBean> getJobs(final RequestParameters params) throws ClusterServiceException{
+        return jobService.getAllJobs();
     }
 
     @Override
-    public HttpEntity<JsonNode> clusterServiceExceptionHandler(final RequestParameters params,
+    public HttpEntity<JsonNode> JobServiceExceptionHandler(final RequestParameters params,
                                                                final ServiceException exception) {
         int start_index = ClusterMessageSource.CLUSTER_SERVICE_START.getErrorCode();
 

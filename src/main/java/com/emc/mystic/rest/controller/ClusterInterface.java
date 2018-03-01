@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-public interface Cluster {
+public interface ClusterInterface {
     @RequestMapping(value = "/clusters/{id}", method = RequestMethod.GET, produces = "application/json" )
     ClusterBean getCluster(@PathVariable("id") Long id, final RequestParameters params) throws ClusterServiceException;
 

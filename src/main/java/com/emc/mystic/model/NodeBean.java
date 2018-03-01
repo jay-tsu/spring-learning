@@ -5,7 +5,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "cluster")
+@Table(name = "node")
 public class NodeBean {
 
     @Id

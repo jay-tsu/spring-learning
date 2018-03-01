@@ -6,7 +6,6 @@ import com.emc.mystic.service.exception.ClusterServiceException;
 
 import java.util.List;
 
-
 public interface ClusterService {
     ClusterBean getCluster(final Long id) throws ClusterServiceException;
     List<NodeBean> getAvailableNodes() throws ClusterServiceException;
