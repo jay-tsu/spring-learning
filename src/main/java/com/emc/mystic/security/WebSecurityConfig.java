@@ -10,21 +10,29 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+
+    private static final String[] AUTH_WHITELIST = {
+            // -- swagger ui
+            "/rest/vxm/swagger-ui.html"
+    };
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable();
 
         http.authorizeRequests()
-            .antMatchers("/rest/vxm/v1/*")
-            .permitAll();
+                .antMatchers(AUTH_WHITELIST).authenticated()
+                // whitelist Swagger UI resources
+                // ... here goes your custom security configuration
+                .antMatchers("/rest/vxm/v1/**").permitAll();
         super.configure(http);
     }
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         auth.inMemoryAuthentication()
-            .withUser("user")
-            .password("password")
-            .roles("USER");
+                .withUser("user")
+                .password("password")
+                .roles("USER");
     }
 }

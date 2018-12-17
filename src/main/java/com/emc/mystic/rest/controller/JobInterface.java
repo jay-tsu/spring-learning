@@ -14,10 +14,10 @@ import java.util.UUID;
 
 @RestController
 public interface JobInterface {
-    @RequestMapping(value = "/jobs/{id}", method = RequestMethod.GET, produces = "application/json" )
+    @RequestMapping(value = "/v1/jobs/{id}", method = RequestMethod.GET, produces = "application/json" )
     ResponseEntity<?> getJob(@PathVariable("id") UUID id, final RequestParameters params) throws JobServiceException;
 
-    @RequestMapping(value = "/jobs", method = RequestMethod.GET, produces = "application/json" )
+    @RequestMapping(value = "/v1/jobs", method = RequestMethod.GET, produces = "application/json" )
     List<JobBean> getJobs(final RequestParameters params) throws JobServiceException;
 
     @ExceptionHandler({JobServiceException.class, })

@@ -6,20 +6,26 @@ import com.emc.mystic.service.exception.ClusterServiceException;
 import com.emc.mystic.service.exception.ServiceException;
 import com.emc.mystic.util.webutil.RequestParameters;
 import com.fasterxml.jackson.databind.JsonNode;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
 import org.springframework.http.HttpEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Api(tags = "Cluster", description = "Cluster Operations")
 @RestController
 public interface ClusterInterface {
-    @RequestMapping(value = "/clusters/{id}", method = RequestMethod.GET, produces = "application/json" )
-    ClusterBean getCluster(@PathVariable("id") Long id, final RequestParameters params) throws ClusterServiceException;
 
-    @RequestMapping(value = "/clusters/available-nodes", method = RequestMethod.GET, produces = "application/json" )
-    List<NodeBean> getAvailableNodes(final RequestParameters params) throws ClusterServiceException;
+    @ApiOperation(value = "Returns VxRail Cluster Details by Cluster ID", notes = "Returns VxRail Cluster Details Like Cluster's Name")
+    @RequestMapping(value = "/v1/cluster", method = RequestMethod.GET, produces = "application/json")
+    ClusterBean getCluster(final RequestParameters params) throws ClusterServiceException;
 
-    @ExceptionHandler({ClusterServiceException.class, })
+
+
+    @ExceptionHandler({ClusterServiceException.class,})
     HttpEntity<JsonNode> clusterServiceExceptionHandler(final RequestParameters params, ServiceException ex);
 
 }

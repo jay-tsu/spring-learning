@@ -15,11 +15,13 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 import java.util.UUID;
@@ -43,17 +45,17 @@ public class LogBundleController implements LogBundleInterface {
     }
 
     @Override
-    public ResponseEntity<?> createLogBundle(@RequestBody LogBundleBean logBundle, final RequestParameters params)
+    public ResponseEntity<?> createLogBundle(@Valid @RequestBody LogBundleBean logBundle, final RequestParameters params)
             throws LogBundleServiceException {
         JobBean job = logBundleService.createLogBundleAsync(logBundle);
 
         URI location = ServletUriComponentsBuilder.fromCurrentContextPath()
-                                                  .path(String.format("/jobs/%s", job.getId()))
-                                                  .build()
-                                                  .toUri();
+                .path(String.format("/jobs/%s", job.getId()))
+                .build()
+                .toUri();
         return ResponseEntity.accepted()
-                             .location(location)
-                             .body(job);
+                .location(location)
+                .body(job);
     }
 
     @Override
@@ -62,23 +64,23 @@ public class LogBundleController implements LogBundleInterface {
         int start_index = LogBundleMessageSource.LOG_BUNDLE_SERVICE_START.getErrorCode();
 
         return LogBundleMessageSource.MESSAGES.stream()
-                                              .filter(message -> message.getErrorCode() == start_index + exception.getErrorCode())
-                                              .findFirst()
-                                              .map(message -> {
-                                                  String localizedMessage;
-                                                  switch (message) {
-                                                      case INVALID_LOG_BUNDLE_TYPE:
-                                                          localizedMessage = message.getLocalizedMessage(params.getLocale(), exception.getExceptionArguments());
-                                                          break;
-                                                      default:
-                                                          localizedMessage = message.getLocalizedMessage(params.getLocale());
-                                                  }
+                .filter(message -> message.getErrorCode() == start_index + exception.getErrorCode())
+                .findFirst()
+                .map(message -> {
+                    String localizedMessage;
+                    switch (message) {
+                        case INVALID_LOG_BUNDLE_TYPE:
+                            localizedMessage = message.getLocalizedMessage(params.getLocale(), exception.getExceptionArguments());
+                            break;
+                        default:
+                            localizedMessage = message.getLocalizedMessage(params.getLocale());
+                    }
 
-                                                  return new ResponseEntity<>(
-                                                          Transformers.convertExceptionToJsonNode(exception, start_index)
-                                                                      .apply(localizedMessage),
-                                                          message.getHttpStatus());
-                                              })
-                                              .orElse(null);
+                    return new ResponseEntity<>(
+                            Transformers.convertExceptionToJsonNode(exception, start_index)
+                                    .apply(localizedMessage),
+                            message.getHttpStatus());
+                })
+                .orElse(null);
     }
 }

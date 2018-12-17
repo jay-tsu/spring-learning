@@ -33,9 +33,9 @@ public enum LogBundleMessageSource {
         return this.errorCode;
     }
 
-//    public String getLocalizedMessage(final String locale) {
-//        return LocaleUtil.getMessage(this.bundleName, this.message_key, new Locale(locale));
-//    }
+    public String getLocalizedMessage(final String locale) {
+        return LocaleUtil.getMessage(this.bundleName, this.message_key, new Locale(locale));
+    }
 
     public String getLocalizedMessage(final String locale, Object... args) {
         return LocaleUtil.getMessage(this.bundleName, this.message_key, new Locale(locale), args);

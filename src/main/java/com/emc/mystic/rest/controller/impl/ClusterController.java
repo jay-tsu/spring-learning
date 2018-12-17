@@ -27,15 +27,11 @@ public class ClusterController implements com.emc.mystic.rest.controller.Cluster
     private ClusterService clusterService;
 
     @Override
-    public ClusterBean getCluster(@PathVariable("id") Long id, final RequestParameters params)
-            throws ClusterServiceException {
-        return clusterService.getCluster(id);
+    public ClusterBean getCluster(final RequestParameters params) throws ClusterServiceException {
+        return clusterService.getCluster();
     }
 
-    @Override
-    public List<NodeBean> getAvailableNodes(final RequestParameters params) throws ClusterServiceException{
-        return clusterService.getAvailableNodes();
-    }
+
 
     @Override
     public HttpEntity<JsonNode> clusterServiceExceptionHandler(final RequestParameters params,

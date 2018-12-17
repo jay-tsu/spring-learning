@@ -22,10 +22,10 @@ public class ClusterServiceImpl implements ClusterService {
     private NodeDao nodeDao;
 
     @Override
-    public ClusterBean getCluster(final Long id) throws ClusterServiceException {
-        ClusterBean clusterBean = clusterDao.findOne(id);
+    public ClusterBean getCluster() throws ClusterServiceException {
+        ClusterBean clusterBean = clusterDao.findAll().get(0);
         if (clusterBean == null) {
-            throw new ClusterServiceException(String.format("Can not find cluster by id %s", id), 1);
+            throw new ClusterServiceException("Can not find the cluster.");
         }
 
         return clusterBean;
